@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<title>NagaBantay | Alerts</title>
+
+<style>
+* {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #e6efe5;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.logo {
+    height: 25px;
+    width: auto;
+    margin-right: 0;
+}
+
+.header {
+    background: linear-gradient(to right, #3d9776, #66d2ab, #ccffed, #d9fff2, #d9fff2, #ffffff);
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.greeting {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: white;
+    -webkit-text-stroke: 0.5px #06402b;
+}
+
+.greeting #userLabel {
+    color: #06402b; 
+    -webkit-text-stroke: 0; 
+    margin-left: 0;
+}
+
+.logout-btn {
+    background-color: #ffffff;
+    color: #06402b;
+    border: 2px solid #06402b;
+    border-radius: 5px;
+    padding: 0.3rem 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.logout-btn:hover {
+    background-color: #06402b;
+    color: white;
+}
+
+.navbar {
+    background: #06402b;
+    padding: 0.5rem 0;
+    font-weight: 600;
+    position: sticky;
+    top: 60px; 
+    z-index: 999;
+}
+
+.navbar ul {
+    display: flex;
+    justify-content: center;
+    gap: 1.5in;
+    list-style: none;
+}
+
+.navbar li {
+    position: relative;
+    cursor: pointer;
+    color: white;
+    text-transform: uppercase;
+    transition: 0.2s;
+    padding-bottom: 0.3rem;
+}
+
+.navbar li:hover {
+    opacity: 0.8;
+}
+
+.navbar li.active::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #ffffff;
+    border-radius: 2px;
+}
+
+.navbar li a {
+    color: white;
+    text-decoration: none;
+    display: block; 
+    padding: 0.5rem 0; 
+    text-transform: uppercase;
+}
+
+.navbar li a:hover {
+    opacity: 0.8;
+}
+
+.main-layout {
+    height: calc(100vh - 108px); 
+    padding: 2rem;
+    display: flex;
+    gap: 2rem;
+    overflow: hidden;
+}
+
+.alert-compose {
+    background-color: #ffffff;
+    border: 2px solid #06402b; 
+    border-radius: 8px;
+    padding: 0;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+    height: 375px;
+}
+
+.alert-header {
+    background-color: #06402b; 
+    padding: 1rem 1.5rem;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+.alert-header h2 {
+    color: #ffffff;
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+form {
+    padding: 1rem 1.5rem;
+}
+
+.form-row {
+    display: flex;           
+    align-items: flex-start; 
+    gap: 1rem;               
+    position: relative;      
+    margin-bottom: 1rem;
+}
+
+.form-row label {
+    width: 100px;            
+    font-weight: 600;
+    color: #06402b;
+    flex-shrink: 0;
+}
+
+.form-row input,
+.form-row select,
+.form-row textarea {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 0.95rem;
+    min-width: 0;
+}
+
+select[multiple] {
+    height: auto;
+}
+
+input[readonly] {
+    background-color: #f0f0f0;
+}
+
+textarea {
+    resize: vertical;
+}
+
+button[type="submit"] {
+    background-color: #06402b;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+button[type="submit"]:hover {
+    background-color: #3d9776;
+}
+
+.chip-input {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  min-height: 40px;
+  max-height: 40px;      
+  background: #fff;
+  overflow-x: auto;      
+  flex: 1;
+  position: relative;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.chip-input .placeholder {
+  position: absolute;
+  left: 10px;
+  color: #888;
+  pointer-events: none;
+  font-size: 0.95rem;
+  transition: opacity 0.2s;
+}
+
+.chip-input::-webkit-scrollbar {
+    height: 6px;            
+    display: none;
+}
+
+.chip-input::-webkit-scrollbar-thumb {
+    background-color: #06402b;
+    border-radius: 3px;
+}
+
+.chip {
+    flex: 0 0 auto;      
+    max-width: 150px;    
+    white-space: nowrap;  
+    overflow: hidden;
+    text-overflow: ellipsis; 
+    background-color: #06402b;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+}
+
+.chip i {
+    cursor: pointer;
+    font-size: 0.7rem;
+}
+
+.chip-input input {
+    border: none;
+    outline: none;
+    flex: 0 1 150px;  
+    min-width: 150px;  
+    background: transparent;
+    font-size: 0.95rem;
+}
+
+.chip .chip-text {
+    max-width: 120px;        
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+.action-bar {
+    position: absolute;
+    bottom: 1.2rem;
+    right: 1.5rem;
+
+    display: flex;
+    gap: 10px;
+}
+
+.action-bar button {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    background-color: #06402b;
+    color: white;
+
+    display: flex;           
+    align-items: center;      
+    justify-content: center;  
+
+    font-size: 1rem;
+    line-height: 1;           
+    padding: 0;               
+    transition: 0.3s;
+}
+
+
+.action-bar i {
+    display: inline-block;
+}
+
+.action-bar button:hover {
+    background-color: #3d9776;
+}
+
+#notifyBtn.active {
+    background-color: #f4b400;
+    color: #06402b;
+}
+
+.alert-compose form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding-bottom: 6.5rem;
+}
+
+.alert-history {
+    background-color: #f0f0f0; 
+    border: 0.5px solid #06402b; 
+    border-radius: 8px;
+    padding: 1rem;
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    width: 300px;        
+    min-width: 300px;
+    max-width: 300px;
+    flex-shrink: 0; 
+    overflow: hidden; 
+    height:375px; 
+}
+
+.alert-history .divider {
+    position: absolute;
+    left: 0; 
+    top: 10px;
+    width: 2px; 
+    height: calc(100% - 20px); 
+    background-color: #06402b; 
+}
+
+.alert-history h3 {
+    color: #06402b; 
+    margin-bottom: 1rem;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    overflow-y: auto;
+    flex: 1;
+    max-height: calc(100% - 60px); 
+}
+
+.history-item {
+    border-left: 1px solid #06402b; 
+    border-radius: 5px;
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: flex;
+    flex-direction: column;
+}
+
+.history-item:hover {
+    background-color: #f0f8f5; 
+}
+
+.history-content {
+    max-height: 0;
+    overflow: hidden;
+    font-size: 0.9rem;
+    transition: max-height 0.3s ease;
+}
+
+.history-item.active .history-content {
+    max-height: 220px;
+    overflow-y: auto;
+    padding-right: 6px;
+    scroll-behavior: smooth;
+}
+
+.history-content::-webkit-scrollbar {
+    width: 6px;
+}
+.history-content::-webkit-scrollbar-thumb {
+    background: #06402b;
+    border-radius: 10px;
+}
+
+.history-item.active .history-content {
+    max-height: 40vh;  
+    overflow-y: auto;
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.history-header h3 {
+    color: #06402b; 
+    font-size: 1.1rem;
+}
+
+.history-header button {
+    background: none;
+    border: none;
+    color: #06402b;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: color 0.2s;
+    opacity: 0.4;
+}
+
+.history-header button:hover {
+    color: #3d9776; 
+}
+
+@media (max-width: 900px) {
+    .main-layout {
+        flex-direction: column;
+    }
+
+    .alert-history {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+}
+
+.history-item:hover .history-header button {
+    opacity: 1;
+}
+
+
+</style>
+</head>
+
+<body>
+<header class="header">
+    <div class="brand">
+        <img src="images/logo.png" alt="NagaBantay Logo" class="logo">
+        <div class="greeting">
+            Naga<span id="userLabel">Bantay</span>
+        </div>
+    </div>
+    <a href="login.html" class="logout-btn">Log Out</a>
+</header>
+
+<nav class="navbar">
+    <ul>
+        <li><a href="home.html">Home</a></li>
+        <li><a href="reports.html">Reports</a></li>
+        <li class="active"><a href="alerts.html">Alerts</a></li>
+        <li><a href="profile.html">Profile</a></li>
+    </ul>
+</nav>
+
+<main class="main-layout">
+
+  <!-- Left Column: Create New Alert -->
+  <div class="alert-compose" style="flex: 1; min-width: 300px;">
+
+    <!-- Heading area -->
+    <div class="alert-header">
+      <h2>Create New Alert</h2>
+    </div>
+
+    <form id="alertForm">
+      <!-- Inline From -->
+      <div class="form-row">
+        <label for="from">From:</label>
+        <input type="text" id="from" name="from" value="username" readonly>
+      </div>
+
+<div class="form-row">
+  <label for="to">To:</label>
+  <div class="chip-input" id="toField">
+      <span class="placeholder">Select barangay and press Enter</span>
+      <input type="text" id="toInput" />
+  </div>
+</div>
+
+
+  <!-- Dropdown will be added here dynamically -->
+      <!-- Inline Subject -->
+      <div class="form-row">
+        <label for="subject">Subject:</label>
+        <input type="text" id="subject" name="subject" placeholder="Enter alert subject">
+      </div>
+
+      <!-- Message Field -->
+      <div class="form-row">
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" rows="4" placeholder="Type your alert message here..."></textarea>
+      </div>
+
+      <div class="action-bar">
+        <button type="button" id="notifyBtn" title="Toggle vibration alert">
+        <i class="fa-solid fa-bell"></i>
+        </button>
+
+        <button type="submit" title="Send Alert">
+        <i class="fa-solid fa-paper-plane"></i>
+        </button>
+    </div>
+    </form>
+  </div>
+
+<div class="alert-history">
+      <div class="divider"></div>
+      <div class="history-header">
+          <h3>History</h3>
+          <button id="deleteHistoryBtn" title="Delete All History">
+              <i class="fa-solid fa-trash"></i>
+          </button>
+      </div>
+
+      <div class="history-list" id="historyList">
+          <!-- JS will populate this dynamically from Firestore -->
+      </div>
+  </div>
+</main>
+
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs,
+  addDoc,
+  serverTimestamp,
+  orderBy,
+  deleteDoc,
+  doc
+} from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAVoghFOOiZwimjT48hG_Sp-GMLlhDgUAI",
+  authDomain: "nagabantay.firebaseapp.com",
+  projectId: "nagabantay",
+  storageBucket: "nagabantay.firebasestorage.app",
+  messagingSenderId: "92668872053",
+  appId: "1:92668872053:web:a48bc62366aadb60dd7f3c"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const fromInput = document.getElementById("from");
+
+async function getOffice(email) {
+  try {
+    const orgsRef = collection(db, "organizations");
+    const q = query(orgsRef, where("email", "==", email));
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      console.warn("No organization document found for email:", email);
+      return null;
+    }
+
+    const data = snap.docs[0].data();
+    if (!data.office) {
+      console.warn("No office field in organization document:", data);
+      return null;
+    }
+
+    return data.office;
+
+  } catch (err) {
+    console.error("Error fetching office:", err);
+    return null;
+  }
+}
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "login.html"; 
+    return;
+  }
+
+  const office = await getOffice(user.email);
+
+  fromInput.value = office || user.displayName || user.email;
+
+  const historyList = document.getElementById("historyList");
+  loadAlertHistory(historyList); 
+});
+
+async function loadAlertHistory(historyList) {
+  historyList.innerHTML = ""; 
+
+  try {
+    const alertsRef = collection(db, "alerts");
+    const q = query(alertsRef, orderBy("createdAt", "desc"));
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      historyList.innerHTML = "<p style='color:#06402b;'>No alerts found.</p>";
+      return;
+    }
+
+    snap.forEach(docSnap => {
+      const data = docSnap.data();
+
+      const item = document.createElement("div");
+      item.className = "history-item";
+
+      const header = document.createElement("div");
+      header.className = "history-header";
+
+      const left = document.createElement("div");
+      left.style.display = "flex";
+      left.style.flexDirection = "column";
+
+      const title = document.createElement("span");
+      title.textContent = data.subject || "Untitled Alert";
+      title.style.fontWeight = "600";
+
+      const timestamp = document.createElement("span");
+      timestamp.style.fontSize = "0.8rem";
+      timestamp.style.color = "#666";
+
+      if (data.createdAt && data.createdAt.toDate) {
+        timestamp.textContent = data.createdAt.toDate().toLocaleString();
+      } else if (data.createdAt) {
+        timestamp.textContent = new Date(data.createdAt.seconds * 1000).toLocaleString();
+      } else {
+        timestamp.textContent = "No date";
+      }
+
+      left.appendChild(title);
+      left.appendChild(timestamp);
+
+      const deleteBtn = document.createElement("button");
+      deleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+      deleteBtn.title = "Delete this alert";
+      deleteBtn.style.background = "none";
+      deleteBtn.style.border = "none";
+      deleteBtn.style.cursor = "pointer";
+      deleteBtn.style.color = "#06402b";
+      deleteBtn.style.fontSize = "0.9rem";
+
+      deleteBtn.addEventListener("click", async (e) => {
+        e.stopPropagation(); 
+
+        if (!confirm("Delete this alert?")) return;
+
+        try {
+          await deleteDoc(doc(db, "alerts", docSnap.id));
+          item.remove();
+        } catch (err) {
+          console.error("Delete failed:", err);
+          alert("Failed to delete alert.");
+        }
+      });
+
+      header.appendChild(left);
+      header.appendChild(deleteBtn);
+
+      const content = document.createElement("div");
+      content.className = "history-content";
+
+      const from = data.from || "Unknown";
+      const message = data.message || "";
+      const barangays = Array.isArray(data.barangays) ? data.barangays.join(", ") : "N/A";
+      const notify = data.notify ? "Alert enabled" : "Alert disabled";
+
+      content.innerHTML = `
+        <p><strong>From:</strong> ${from}</p>
+        <p><strong>Message:</strong> ${message}</p>
+        <p><strong>Barangays:</strong> ${barangays}</p>
+        <p>${notify}</p>
+      `;
+
+      item.appendChild(header);
+      item.appendChild(content);
+
+      item.addEventListener("click", () => {
+        item.classList.toggle("active");
+      });
+
+      historyList.appendChild(item);
+    });
+
+  } catch (err) {
+    console.error("Error loading alert history:", err);
+    historyList.innerHTML = "<p style='color:#ff0000;'>Failed to load alerts.</p>";
+  }
+}
+
+function updateDropdown(filter = "") {
+  dropdown.innerHTML = "";
+  const filtered = barangays.filter(b => b.toLowerCase().includes(filter.toLowerCase()));
+  filtered.forEach(b => {
+    const li = document.createElement("li");
+    li.textContent = b;
+    li.style.padding = "5px 10px";
+    li.style.cursor = "pointer";
+    li.addEventListener("click", () => selectBarangay(b));
+    dropdown.appendChild(li);
+  });
+  dropdown.style.display = filtered.length ? "block" : "none";
+}
+
+
+const barangays = [
+  "Abella", "Bagumbayan Norte", "Bagumbayan Sur", "Balatas", "Calauag",
+  "Cararayan", "Carolina", "Concepcion Grande", "Concepcion Pequena",
+  "Dayangdang", "Del Rosario", "Dinaga", "Igualdad Interior", "Lerma",
+  "Libton", "Mabolo", "Pacol", "Panicuason", "Penafrancia", "Sabang",
+  "San Felipe", "San Francisco", "San Isidro", "Santa Cruz", "Tabuco",
+  "Tinago", "Triangulo", "ALL"
+];
+
+const toField = document.getElementById("toField");
+const toInput = document.getElementById("toInput");
+
+const formRow = toField.parentElement; 
+const dropdown = document.createElement("ul");
+
+dropdown.style.position = "absolute";
+dropdown.style.top = "100%";      
+const labelWidth = formRow.querySelector("label").offsetWidth;
+dropdown.style.left = labelWidth + "px";
+dropdown.style.right = "0";
+dropdown.style.background = "#fff";
+dropdown.style.border = "1px solid #ccc";
+dropdown.style.maxHeight = "200px";
+dropdown.style.overflowY = "auto";
+dropdown.style.zIndex = "1000";
+dropdown.style.listStyle = "none";
+dropdown.style.padding = "0";
+dropdown.style.margin = "0";
+dropdown.style.borderRadius = "5px";
+dropdown.style.display = "none";
+
+formRow.appendChild(dropdown);
+
+toInput.addEventListener("input", () => {
+    const val = toInput.value.trim();
+    if (val.length > 0) {
+        const filtered = barangays.filter(b => b.toLowerCase().includes(val.toLowerCase()));
+        dropdown.innerHTML = "";
+        filtered.forEach(b => {
+            const li = document.createElement("li");
+            li.textContent = b;
+            li.style.padding = "5px 10px";
+            li.style.cursor = "pointer";
+            li.addEventListener("click", () => selectBarangay(b));
+            dropdown.appendChild(li);
+        });
+        dropdown.style.display = filtered.length ? "block" : "none";
+    } else {
+        dropdown.style.display = "none";
+    }
+});
+
+toInput.addEventListener("keydown", (e) => {
+    const filtered = barangays.filter(b => b.toLowerCase().includes(toInput.value.toLowerCase()));
+
+    if (e.key === "Enter") {
+        e.preventDefault(); 
+
+        if (filtered.length > 0) {
+            selectBarangay(filtered[0]);
+        }
+    }
+});
+
+toInput.addEventListener("focus", () => {
+    placeholder.style.display = "none"; 
+});
+
+
+document.addEventListener("click", (e) => {
+    if (!formRow.contains(e.target)) dropdown.style.display = "none";
+});
+
+function selectBarangay(name) {
+    addChip(name);
+    toInput.value = "";
+    dropdown.style.display = "none";
+}
+
+let selectedBarangays = [];
+function addChip(name) {
+    if (selectedBarangays.includes(name)) return;
+
+    if (name === "ALL") {
+        selectedBarangays = ["ALL"];
+    } else {
+        selectedBarangays = selectedBarangays.filter(b => b !== "ALL");
+        selectedBarangays.push(name);
+    }
+
+    renderChips();
+}
+
+const placeholder = toField.querySelector(".placeholder");
+
+function renderChips() {
+    toField.querySelectorAll(".chip").forEach(c => c.remove());
+
+    selectedBarangays.forEach(b => {
+        const chip = document.createElement("div");
+        chip.className = "chip";
+
+        const chipText = document.createElement("span");
+        chipText.className = "chip-text";
+        chipText.textContent = b;
+
+        chip.appendChild(chipText);
+
+        const close = document.createElement("i");
+        close.className = "fa-solid fa-xmark";
+        close.addEventListener("click", () => removeChip(b));
+        chip.appendChild(close);
+
+        toField.insertBefore(chip, toInput);
+    });
+
+    placeholder.style.display = (selectedBarangays.length === 0 && document.activeElement !== toInput) ? "block" : "none";
+}
+
+toInput.addEventListener("blur", () => {
+    if (selectedBarangays.length === 0) {
+        placeholder.style.display = "block";
+    }
+});
+
+
+function removeChip(name) {
+    selectedBarangays = selectedBarangays.filter(b => b !== name);
+    renderChips();
+}
+
+async function sendAlertToUsers(alertData) {
+  const usersRef = collection(db, "users");
+
+  let q;
+  if (alertData.barangays.includes("ALL")) {
+    q = query(usersRef);
+  } else {
+    q = query(
+      usersRef,
+      where("barangay", "in", alertData.barangays)
+    );
+  }
+
+  const snap = await getDocs(q);
+  const promises = [];
+
+  snap.forEach(docSnap => {
+    const userId = docSnap.id;
+
+    promises.push(
+      addDoc(collection(db, "users", userId, "notifications"), {
+        subject: alertData.subject,
+        message: alertData.message,
+        from: alertData.from,
+        createdAt: serverTimestamp(),
+        read: false
+      })
+    );
+  });
+
+  await Promise.all(promises);
+}
+
+const alertForm = document.getElementById("alertForm");
+const notifyBtn = document.getElementById("notifyBtn");
+let notifyEnabled = false;
+
+notifyBtn.addEventListener("click", () => {
+  notifyEnabled = !notifyEnabled;
+  notifyBtn.classList.toggle("active", notifyEnabled);
+});
+
+alertForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  if (selectedBarangays.length === 0) {
+    alert("Please select at least one barangay.");
+    return;
+  }
+
+  const subject = document.getElementById("subject").value.trim();
+  const message = document.getElementById("message").value.trim();
+
+  if (!subject || !message) {
+    alert("Please enter both subject and message.");
+    return;
+  }
+
+  const alertData = {
+    from: fromInput.value,
+    subject: subject,
+    message: message,
+    barangays: selectedBarangays,
+    notify: notifyEnabled, 
+    createdAt: serverTimestamp()
+  };
+
+  try {
+    await addDoc(collection(db, "alerts"), alertData);
+
+    await sendAlertToUsers(alertData);
+
+    alert("Alert sent successfully!");
+
+    alertForm.reset();
+    selectedBarangays = [];
+    renderChips();
+
+    notifyEnabled = false;
+    notifyBtn.classList.remove("active");
+
+  } catch (err) {
+    console.error("Error sending alert:", err);
+    alert("Failed to send alert.");
+  }
+});
+
+const deleteHistoryBtn = document.getElementById("deleteHistoryBtn");
+
+deleteHistoryBtn.addEventListener("click", async () => {
+  if (!confirm("Delete ALL alert history? This cannot be undone.")) return;
+
+  try {
+    const alertsRef = collection(db, "alerts");
+    const snap = await getDocs(alertsRef);
+
+    const deletes = snap.docs.map(d => deleteDoc(doc(db, "alerts", d.id)));
+    await Promise.all(deletes);
+
+    document.getElementById("historyList").innerHTML =
+      "<p style='color:#06402b;'>History cleared.</p>";
+
+  } catch (err) {
+    console.error("Bulk delete failed:", err);
+    alert("Failed to delete history.");
+  }
+});
+
+</script>
+</body>
+</html>

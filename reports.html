@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<title>NagaBantay | Reports</title>
+
+<style>
+* {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #e6efe5;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.logo {
+    height: 25px;
+    width: auto;
+    margin-right: 0;
+}
+
+.header {
+    background: linear-gradient(to right, #3d9776, #66d2ab, #ccffed, #d9fff2, #d9fff2, #ffffff);
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.greeting {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: white;
+    -webkit-text-stroke: 0.5px #06402b;
+    margin-left: 0rem;
+}
+
+.greeting #username {
+    color: #06402b; 
+    -webkit-text-stroke: 0; 
+    margin-left: 0rem;
+}
+
+.logout-btn {
+    background-color: #ffffff;
+    color: #06402b;
+    border: 2px solid #06402b;
+    border-radius: 5px;
+    padding: 0.3rem 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.logout-btn:hover {
+    background-color: #06402b;
+    color: white;
+}
+
+.navbar {
+    background: #06402b;
+    padding: 0.5rem 0; 
+    font-weight: 600;
+    position: sticky;
+    top: 60px;
+    z-index: 999;
+}
+
+.navbar ul {
+    display: flex;
+    justify-content: center; 
+    gap: 1.5in;
+    list-style: none;
+}
+
+.navbar li {
+    position: relative;
+    cursor: pointer;
+    color: white;
+    text-transform: uppercase;
+    transition: 0.2s;
+    padding-bottom: 0.3rem; 
+}
+
+.navbar li:hover {
+    opacity: 0.8;
+}
+
+.navbar li a {
+    color: white;
+    text-decoration: none;
+    display: block; 
+    padding: 0.5rem 0; 
+    text-transform: uppercase;
+}
+
+.navbar li.active::after {
+    content: '';
+    position: absolute;
+    bottom: 3px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #ffffff;
+    border-radius: 2px;
+}
+
+.search-container {
+    margin: 20px 0.5in 10px 0.5in;
+    position: relative;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.5rem 0.7rem 0.5rem 2.0rem;
+    font-size: 0.95rem;
+    border: 2px solid #06402b;
+    border-radius: 6px;
+    outline: none;
+    background-color: #ffffff;
+    color: #06402b;
+}
+
+.search-input::placeholder {
+    color: #06402b;
+    opacity: 0.4;
+}
+
+.search-input:focus {
+    border-color: #3d9776;
+}
+
+.search-icon {
+    position: absolute;
+    top: 50%;
+    left: 0.75rem;
+    transform: translateY(-50%);
+    color: #06402b;
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.reports-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0.5in 0 0.5in;
+    position: relative;
+}
+
+.reports-title {
+    color: #06402b;
+    font-weight: 600;
+    font-size: 1.2rem;
+    display: inline-block;
+}
+
+.sort-container {
+    position: relative;
+    display: inline-block;
+}
+
+.sort-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    background-color: #ffffff;
+    border: 1px solid #06402b;
+    border-radius: 4px;
+    list-style: none;
+    padding: 0.3rem 0;
+    min-width: 120px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 100;
+}
+
+.sort-btn {
+    background-color: #06402b;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.4rem 0.8rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.sort-btn:hover {
+    background-color: #66d2ab;
+}
+
+.sort-dropdown li {
+    padding: 0.4rem 0.8rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.sort-dropdown li:hover {
+    background-color: #b0ceac;
+}
+
+.table-container {
+    margin: 10px 0.5in 2rem 0.5in;
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: visible;  
+    border-radius: 6px;
+    position: relative;
+    height: 280px;
+}
+
+
+.reports-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+    table-layout: fixed;
+}
+
+.reports-table thead th {
+    background-color: #b0ceac;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+.reports-table th,
+.reports-table td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0.6rem 0.8rem;
+    text-align: center;
+    font-size: 0.90rem;
+}
+
+.reports-table th:nth-child(1),
+.reports-table td:nth-child(1) { width: 120px; }
+
+.reports-table th:nth-child(2),
+.reports-table td:nth-child(2) { width: 150px; }
+
+.reports-table th:nth-child(3),
+.reports-table td:nth-child(3) { width: 300px; text-align: left; }
+
+.reports-table th:nth-child(4),
+.reports-table td:nth-child(4) { width: 140px; }
+
+.reports-table th:nth-child(5),
+.reports-table td:nth-child(5) { width: 140px; }
+
+.reports-table th:nth-child(6),
+.reports-table td:nth-child(6) { width: 100px; }
+
+.reports-table th:nth-child(7),
+.reports-table td:nth-child(7) { width: 150px; }
+
+.report-row { cursor: pointer; }
+
+.expand-row {
+    display: none;
+    background: #e6efe5;
+}
+
+.expand-row td {
+    white-space: normal;
+    padding: 12px;
+    text-align: left;
+}
+
+.report-row.active {
+    background-color: #cfe9dc !important;
+}
+
+.status-btn {
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: none;
+    font-size: 0.65rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: #e6efe5;
+}
+
+.status-NOT { background: #808080; }
+.status-PENDING { background: #fb8c00; }
+.status-AWAIT { background: #1e88e5; }
+.status-DONE { background: #2e7d32; }
+.status-CANCEL { background: #c62828; }
+
+.status-dropdown {
+    max-height: 120px;
+    max-width: 80px;
+    font-size: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 9999;
+}
+
+.image-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    justify-content: center;
+    align-items: center;
+}
+
+.image-modal img {
+    max-width: 80%;
+    max-height: 80%;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(255,255,255,0.3);
+    background: white;
+}
+
+.image-modal span {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 28px;
+    color: white;
+    cursor: pointer;
+}
+
+.table-container::-webkit-scrollbar {
+    width: 5px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background-color: rgba(6, 64, 43, 0.35); /* low opacity green */
+    border-radius: 10px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(6, 64, 43, 0.6);
+}
+
+.table-container {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(6, 64, 43, 0.35) transparent;
+}
+
+</style>
+
+</head>
+
+<body>
+<header class="header">
+    <div class="brand">
+        <img src="images/logo.png" alt="NagaBantay Logo" class="logo">
+        <div class="greeting">
+            Naga<span id="username">Bantay</span>
+        </div>
+    </div>
+    <a href="login.html" class="logout-btn">Log Out</a>
+</header>
+
+<nav class="navbar">
+    <ul>
+        <li><a href="home.html">Home</a></li>
+        <li class="active"><a href="reports.html">Reports</a></li>
+        <li><a href="alerts.html">Alerts</a></li>
+        <li><a href="profile.html">Profile</a></li>
+    </ul>
+</nav>
+
+<div class="search-container">
+  <i class="fa fa-search search-icon"></i>
+  <input type="text" class="search-input" placeholder="Search reports..." />
+</div>
+
+<div class="reports-header">
+    <h3 class="reports-title">Reports</h3>
+    <div class="sort-container">
+        <button class="sort-btn">Sort &#9662;</button>
+        <ul class="sort-dropdown">
+            <li data-sort="date">Date</li>
+            <li data-sort="severity">Severity</li>
+        </ul>
+    </div>
+</div>
+
+
+<div class="table-container">
+    <table class="reports-table">
+        <thead>
+            <tr>
+                <th>Report ID</th>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Location</th>
+                <th>Category</th>
+                <th>Severity</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+
+<div class="image-modal" id="imageModal" onclick="closeModal()">
+  <span>&times;</span>
+  <img id="modalImage" src="">
+</div>
+
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+import { 
+  getFirestore, 
+  collection, 
+  getDocs, 
+  query, 
+  where,
+  doc,
+  updateDoc
+} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAVoghFOOiZwimjT48hG_Sp-GMLlhDgUAI",
+  authDomain: "nagabantay.firebaseapp.com",
+  projectId: "nagabantay"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const loggedInOffice = localStorage.getItem("office") || "CENRO";
+
+const allowedStatuses = ["Not Yet Responded", "Pending", "Awaiting for Review"];
+
+let reportsData = [];
+let officesList = [];
+
+async function loadOffices() {
+  officesList = [];
+
+  const snapshot = await getDocs(collection(db, "organizations"));
+  snapshot.forEach(docSnap => {
+    const office = docSnap.data().office;
+    if (office && office !== loggedInOffice) {
+      officesList.push(office);
+    }
+  });
+}
+
+
+async function loadReports() {
+  const q = query(
+    collection(db, "reports"),
+    where("office", "==", loggedInOffice)
+  );
+
+  const snapshot = await getDocs(q);
+  reportsData = [];
+
+  snapshot.forEach(docSnap => {
+    const data = docSnap.data();
+    if (allowedStatuses.includes(data.my_naga_status)) {
+      reportsData.push({ id: docSnap.id, ...data });
+    }
+  });
+
+  renderTable(reportsData);
+}
+
+function renderTable(reports) {
+  const tbody = document.querySelector(".reports-table tbody");
+  tbody.innerHTML = "";
+
+  const statuses = ["Not Yet Responded", "Pending", "Awaiting for Review", "Done", "Cancelled"];
+
+  reports.forEach(r => {
+    const rowId = `expand-${r.id}`;
+
+    const tr = document.createElement("tr");
+    tr.classList.add("report-row");
+
+    tr.innerHTML = `
+      <td title="${r.id}">${r.id}</td>
+      <td title="${(r.date_created?.toDate ? r.date_created.toDate() : new Date(r.date_created)).toLocaleString()}">
+        ${(r.date_created?.toDate ? r.date_created.toDate() : new Date(r.date_created)).toLocaleDateString()}
+      </td>
+      <td title="${r.description || ''}">
+        ${r.description || "-"}
+      </td>
+      <td title="${r.barangay || '-'}">${r.barangay || "-"}</td>
+      <td title="${r.category || '-'}">${r.category || "-"}</td>
+      <td style="color:${severityColor(r.predicted_severity)}">
+        ${r.predicted_severity || "-"}
+      </td>
+      <td style="position:relative;">
+        <button class="status-btn ${statusClass(r.my_naga_status)}">
+          ${r.my_naga_status} <i class="fa fa-caret-down" style="margin-left:4px;"></i>
+        </button>
+        <ul class="status-dropdown" style="display:none; position:absolute; top:28px; left:0; background:white; border:1px solid #06402b; border-radius:4px; list-style:none; padding:0; min-width:150px; z-index:9999;">
+          ${statuses.map(s => `<li style="padding:6px 10px; cursor:pointer;" data-status="${s}">${s}</li>`).join("")}
+        </ul>
+      </td>
+    `;
+
+    tr.addEventListener("click", e => {
+      if (
+        e.target.closest(".status-btn") ||
+        e.target.closest(".status-dropdown")
+      ) return;
+      toggleRow(rowId, tr);
+    });
+
+    const statusBtn = tr.querySelector(".status-btn");
+    const statusDropdown = tr.querySelector(".status-dropdown");
+
+    statusBtn.addEventListener("click", e => {
+  e.stopPropagation();
+
+  document.querySelectorAll(".status-dropdown").forEach(d => d.remove());
+
+  const rect = statusBtn.getBoundingClientRect();
+  const cloned = statusDropdown.cloneNode(true);
+  cloned.style.display = "block";
+  cloned.style.position = "fixed";
+  cloned.style.top = rect.bottom + "px";
+  cloned.style.left = rect.left + "px";
+  cloned.style.zIndex = 99999;
+  cloned.style.background = "#fff";
+
+  document.body.appendChild(cloned);
+
+  cloned.querySelectorAll("li").forEach(li => {
+    li.addEventListener("click", async ev => {
+      const newStatus = ev.target.dataset.status;
+      await updateStatus(r.id, newStatus);
+      cloned.remove();
+    });
+  });
+
+  document.addEventListener("click", () => cloned.remove(), { once: true });
+});
+
+
+
+    statusDropdown.querySelectorAll("li").forEach(li => {
+      li.addEventListener("click", async e => {
+        const newStatus = e.target.dataset.status;
+        await updateStatus(r.id, newStatus);
+      });
+    });
+
+    document.addEventListener("click", () => statusDropdown.style.display = "none");
+
+const expandTr = document.createElement("tr");
+expandTr.id = rowId;
+expandTr.classList.add("expand-row");
+
+expandTr.innerHTML = `
+  <td colspan="7">
+    <div style="
+        display:flex;
+        gap:20px;
+        align-items:flex-start;
+        width:100%;
+        max-width:100%;
+        box-sizing:border-box;
+        ">
+
+      <!-- LEFT: DETAILS (FLEX-GROWS) -->
+      <div style="flex:1; min-width:0;">
+        <strong>Report ID:</strong> ${r.id}<br>
+        <strong>Date:</strong> ${(r.date_created?.toDate ? r.date_created.toDate() : new Date(r.date_created)).toLocaleString()}<br>
+        <strong>Barangay:</strong> ${r.barangay || "-"}<br>
+        <strong>Category:</strong> ${r.category || "-"}<br>
+        <strong>Predicted Severity:</strong> ${r.predicted_severity || "-"}<br><br>
+
+        <strong>Description:</strong>
+        <div style="
+          margin-top:6px;
+          white-space:normal;
+          word-break:break-word;
+          line-height:1.5;
+        ">
+          ${r.description || "-"}
+        </div>
+      </div>
+
+      <!-- RIGHT: ACTIONS / IMAGE -->
+      <div style="width:220px; flex-shrink:0;">
+        <strong>Forward to Office:</strong><br>
+        <select class="forward-select" style="width:100%; margin-top:4px;">
+          <option value="">Select Office</option>
+          ${getOfficeOptions()}
+        </select>
+
+        ${r.image_attachment ? `
+          <br><br>
+          <img src="${r.image_attachment}" 
+               style="width:100%; max-width:180px; border-radius:8px; cursor:pointer;" 
+               onclick="openModal('${r.image_attachment}', event)">
+        ` : ""}
+      </div>
+    </div>
+  </td>
+`;
+
+
+    expandTr.querySelector(".forward-select").addEventListener("change", e => {
+      forwardOffice(r.id, e.target.value);
+    });
+
+    tbody.appendChild(tr);
+    tbody.appendChild(expandTr);
+  });
+}
+
+const sortBtn = document.querySelector(".sort-btn");
+const sortDropdown = document.querySelector(".sort-dropdown");
+
+sortBtn.addEventListener("click", (e) => {
+  e.stopPropagation(); 
+  sortDropdown.style.display = sortDropdown.style.display === "block" ? "none" : "block";
+});
+
+document.addEventListener("click", () => {
+  sortDropdown.style.display = "none";
+});
+
+
+function toggleRow(id, clickedRow) {
+  document.querySelectorAll(".expand-row").forEach(row => {
+    if (row.id !== id) row.style.display = "none";
+  });
+
+  document.querySelectorAll(".report-row").forEach(row => {
+    if (row !== clickedRow) row.classList.remove("active");
+  });
+
+  const row = document.getElementById(id);
+  const isOpen = row.style.display === "table-row";
+
+  row.style.display = isOpen ? "none" : "table-row";
+  clickedRow.classList.toggle("active", !isOpen);
+}
+
+function openModal(src, e) {
+  e.stopPropagation(); 
+  document.getElementById("modalImage").src = src;
+  document.getElementById("imageModal").style.display = "flex";
+}
+
+function closeModal() {
+  document.getElementById("imageModal").style.display = "none";
+}
+
+function severityColor(level) {
+  if (!level) return "#333";
+  const map = { LOW: "green", MEDIUM: "#ffb74d", HIGH: "red" };
+  return map[level.toUpperCase()] || "#333";
+}
+
+document.querySelector(".search-input").addEventListener("input", e => {
+  const value = e.target.value.toLowerCase();
+
+  const filtered = reportsData.filter(r =>
+    (r.id || "").toString().toLowerCase().includes(value) ||
+    (r.date_created ? (r.date_created.toDate ? r.date_created.toDate() : new Date(r.date_created)).toLocaleDateString() : "").toLowerCase().includes(value) ||
+    (r.description || "").toLowerCase().includes(value) ||
+    (r.barangay || "").toLowerCase().includes(value) ||
+    (r.category || "").toLowerCase().includes(value) ||
+    (r.predicted_severity || "").toLowerCase().includes(value) ||
+    (r.my_naga_status || "").toLowerCase().includes(value)
+  );
+
+  renderTable(filtered);
+});
+
+
+document.querySelectorAll(".sort-dropdown li").forEach(item => {
+  item.addEventListener("click", () => {
+    if (item.dataset.sort === "date") {
+      reportsData.sort((a, b) => new Date(a.date_created) - new Date(b.date_created));
+    } else if (item.dataset.sort === "severity") {
+      const rank = { HIGH: 3, MEDIUM: 2, LOW: 1 };
+      reportsData.sort((a, b) => (rank[b.predicted_severity?.toUpperCase()] || 0) - 
+                                  (rank[a.predicted_severity?.toUpperCase()] || 0));
+    }
+    renderTable(reportsData);
+  });
+});
+
+
+function statusClass(status) {
+  if (!status) return "status-NOT";
+  const map = {
+    "Not Yet Responded": "status-NOT",
+    "Pending": "status-PENDING",
+    "Awaiting for Review": "status-AWAIT",
+    "Done": "status-DONE",
+    "Cancelled": "status-CANCEL"
+  };
+  return map[status] || "status-NOT";
+}
+
+function getOfficeOptions() {
+  if (officesList.length === 0) {
+    return `<option disabled>No available offices</option>`;
+  }
+
+  return officesList
+    .map(o => `<option value="${o}">${o}</option>`)
+    .join("");
+}
+
+async function updateStatus(reportId, newStatus) {
+  if (!newStatus) return;
+  const ref = doc(db, "reports", reportId);
+  await updateDoc(ref, { my_naga_status: newStatus });
+  loadReports(); // refresh UI
+}
+
+async function forwardOffice(reportId, office) {
+  if (!office) return;
+  const ref = doc(db, "reports", reportId);
+  await updateDoc(ref, { office: office, my_naga_status: "Pending" });
+  await loadOffices();
+  loadReports();
+}
+
+async function initPage() {
+  await loadOffices();  
+  await loadReports();   
+}
+
+initPage();
+
+window.updateStatus = updateStatus;
+window.forwardOffice = forwardOffice;
+window.openModal = openModal;
+window.closeModal = closeModal;
+
+
+</script>
+
+
+</body>
+</html>
