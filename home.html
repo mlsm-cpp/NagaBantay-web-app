@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstataic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<title>NagaBantay | Home</title>
+
+<style>
+* {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body { background-color: #e6efe5; }
+
+.header {
+    background: linear-gradient(to right, #3d9776, #66d2ab, #ccffed, #d9fff2, #ffffff);
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.greeting {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: white;
+    -webkit-text-stroke: 0.5px #06402b;
+}
+
+.greeting #username {
+    color: #06402b;
+    -webkit-text-stroke: 0;
+    margin-left: 0.25rem;
+}
+
+.logout-btn {
+    background-color: #ffffff;
+    color: #06402b;
+    border: 2px solid #06402b;
+    border-radius: 5px;
+    padding: 0.3rem 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.navbar {
+    background: #06402b;
+    padding: 0.5rem 0; 
+    font-weight: 600;
+    position: sticky;
+    top: 60px; 
+    z-index: 999;
+}
+
+.navbar ul {
+    display: flex;
+    justify-content: center; 
+    gap: 1.5in;
+    list-style: none;
+}
+
+.navbar li {
+    position: relative;
+    cursor: pointer;
+    color: white;
+    text-transform: uppercase;
+    transition: 0.2s;
+    padding-bottom: 0.3rem; 
+}
+
+.navbar li:hover {
+    opacity: 0.8;
+}
+
+.navbar li.active::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #ffffff;
+    border-radius: 2px;
+}
+
+.navbar li a {
+    color: white;
+    text-decoration: none;
+    display: block; 
+    padding: 0.5rem 0; 
+    text-transform: uppercase;
+}
+
+.navbar li a:hover {
+    opacity: 0.8;
+}
+
+.navbar li.active::after {
+    content: '';
+    position: absolute;
+    bottom: 3px; 
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #ffffff;
+    border-radius: 2px;
+}
+
+.analytics-section {
+    margin: 30px 1.2in 80px 1.2in;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.analytics-row {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.analytics-wrapper {
+    position: relative;
+    width: 475px;
+    height: 350px;
+    flex: 1;
+}
+
+.analytics-shadow {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 100%;
+    height: 100%;
+    background-color: #e6efe5;
+    border: 2px solid #06402b;
+    border-radius: 10px;
+}
+
+.analytics-box {
+    position: absolute;
+    inset: 0;
+    background-color: #06402b;
+    border-radius: 10px;
+    padding: 15px;
+    color: white;
+}
+
+.analytics-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.analytics-header h3 {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.analytics-header i {
+    font-size: 1.1rem;
+}
+
+#nagaMap {
+    height: 285px;
+    width: 100%;
+    border-radius: 6px;
+}
+
+.fab-generate {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #06402b;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fab-generate:hover {
+    background-color: #2e7d32;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    cursor: pointer;
+    transform: scale(1.1);
+    transition: 0.2s;
+}
+
+.analytics-title {
+    position: absolute;
+    top: 12px;
+    left: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.analytics-title i {
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+
+.map-layout {
+  display: flex;
+  gap: 16px;
+  height: 220px;
+}
+
+#nagaMap {
+  flex: 3;
+  min-height: 220px;
+  border-radius: 6px;
+}
+
+.map-legend {
+  position: absolute;      
+  top: 50%;                
+  right: 24px;             
+  transform: translateY(-50%); 
+  background: rgba(0, 0, 0, 0.5); 
+  padding: 12px;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 0.85rem;
+  z-index: 1000;          
+}
+
+
+.map-legend h4 {
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.map-legend ul {
+  list-style: none;
+  padding: 0;
+}
+
+.map-legend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.legend {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+}
+
+.legend.low {
+  background: #a5d6a7;
+}
+
+.legend.medium {
+  background: #ffb74d;
+}
+
+.legend.high {
+  background: #e53935;
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="header">
+    <div class="greeting">
+        Marhay na Aldaw, <span id="username"></span>
+    </div>
+    <a href="login.html" class="logout-btn">Log Out</a>
+</header>
+
+<nav class="navbar">
+    <ul>
+        <li class="active"><a href="home.html">Home</a></li>
+        <li><a href="reports.html">Reports</a></li>
+        <li><a href="alerts.html">Alerts</a></li>
+        <li><a href="profile.html">Profile</a></li>
+    </ul>
+</nav>
+
+<section class="analytics-section">
+    <div class="analytics-row">
+
+        <div class="analytics-wrapper">
+            <div class="analytics-shadow"></div>
+            <div class="analytics-box">
+                <h3 class="analytics-title">
+                <i class="fa-solid fa-chart-line"></i>
+                Monthly Issue Trend</h3>
+                <canvas></canvas>
+            </div>
+        </div>
+
+        <div class="analytics-wrapper">
+            <div class="analytics-shadow"></div>
+            <div class="analytics-box">
+                <div class="analytics-header">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <h3>Category Distribution</h3>
+                </div>
+                <canvas></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="analytics-row">
+        <div class="analytics-wrapper">
+            <div class="analytics-shadow"></div>
+            <div class="analytics-box">
+                <div class="analytics-header">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                    <h3>Spatial Distribution of Reports</h3>
+                </div>
+                <div class="map-layout">
+                <div id="nagaMap"></div>
+
+                <div class="map-legend">
+                  <h4>Report Density</h4>
+                  <ul></ul>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="fab-generate" id="generateReport">
+    <i class="fa-solid fa-file-arrow-down"></i>
+</div>
+
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
+import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAVoghFOOiZwimjT48hG_Sp-GMLlhDgUAI",
+  authDomain: "nagabantay.firebaseapp.com",
+  projectId: "nagabantay"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+async function getOffice(email) {
+  const q = query(collection(db, "organizations"), where("email", "==", email));
+  const snap = await getDocs(q);
+  return snap.empty ? null : snap.docs[0].data().office;
+}
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) return;
+
+  const office = await getOffice(user.email);
+  if (!office) {
+    console.error("No office found for user");
+    return;
+  }
+
+  document.getElementById("username").textContent = office + "!";
+
+  const q = query(collection(db, "reports"), where("office", "==", office));
+  const snap = await getDocs(q);
+  const reports = snap.docs.map(d => d.data());
+
+  window._reports = reports;
+
+  buildTrend(reports);
+  buildCategory(reports);
+  buildHeatmap(reports);
+});
+
+const CATEGORY_COLORS = [
+  "#2E7D32", "#66BB6A", "#A5D6A7", "#F9A825",
+  "#EF6C00", "#D84315", "#6A1B9A", "#1565C0"
+];
+
+function buildTrend(reports) {
+  const data = {};
+
+  reports.forEach(r => {
+    const d = r.date_created?.toDate?.() || new Date(r.date_created);
+    if (!d || isNaN(d)) return;
+
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    data[key] = (data[key] || 0) + 1;
+  });
+
+  const sortedKeys = Object.keys(data).sort(
+    (a, b) => new Date(a + "-01") - new Date(b + "-01")
+  );
+
+  const sortedData = {};
+  sortedKeys.forEach(k => sortedData[k] = data[k]);
+
+  renderTrendChart(sortedData);
+}
+
+function renderTrendChart(data) {
+  const container = document.querySelectorAll(".analytics-box")[0];
+
+  const title = container.querySelector(".analytics-title");
+  container.innerHTML = "";
+  container.appendChild(title);
+
+  const canvas = document.createElement("canvas");
+  canvas.style.marginTop = "40px";
+  container.appendChild(canvas);
+
+  new Chart(canvas, {
+    type: "line",
+    data: {
+      labels: Object.keys(data),
+      datasets: [{
+        label: "Issues",
+        data: Object.values(data),
+        borderColor: "#ffffff",
+        backgroundColor: "rgba(255,255,255,0.25)",
+        pointBackgroundColor: "#ffffff",
+        pointBorderColor: "#ffffff",
+        tension: 0.35,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: true, labels: { color: "#ffffff" } }
+      },
+      scales: {
+        x: { ticks: { color: "#ffffff" }, grid: { color: "rgba(255,255,255,0.15)" } },
+        y: { ticks: { color: "#ffffff" }, grid: { color: "rgba(255,255,255,0.15)" } }
+      }
+    }
+  });
+}
+
+/* ---------- CATEGORY ---------- */
+function buildCategory(reports) {
+  const container = document.querySelectorAll(".analytics-box")[1];
+  container.innerHTML = "";
+
+  const title = document.createElement("h3");
+  title.className = "analytics-title";
+  title.innerHTML = `<i class="fa-solid fa-pie-chart"></i> Category Distribution`;
+  container.appendChild(title);
+
+  const canvas = document.createElement("canvas");
+  canvas.style.marginTop = "30px";
+  canvas.style.height = "320px";
+  container.appendChild(canvas);
+
+  const data = {};
+  reports.forEach(r => {
+    const c = r.category || "Other";
+    data[c] = (data[c] || 0) + 1;
+  });
+
+  new Chart(canvas, {
+    type: "doughnut",
+    data: {
+      labels: Object.keys(data),
+      datasets: [{
+        data: Object.values(data),
+        backgroundColor: CATEGORY_COLORS,
+        borderColor: "#ffffff",
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: "55%",
+      layout: { padding: 20 },
+      plugins: {
+        legend: {
+          position: "right",
+          labels: { color: "#ffffff", boxWidth: 16, boxHeight: 16, padding: 14 }
+        }
+      }
+    }
+  });
+}
+
+function normalizeBarangay(name) {
+  return name?.trim().replace(/\s+/g, " ").replace("Penafrancia", "Peñafrancia");
+}
+
+function buildHeatmap(reports) {
+  const mapContainer = document.getElementById("nagaMap");
+  if (mapContainer._leaflet_id) mapContainer._leaflet_id = null;
+
+  const map = L.map("nagaMap").setView([13.6218, 123.1948], 13);
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "© OpenStreetMap contributors"
+  }).addTo(map);
+
+  const barangayCoords = {
+    "Abella":[13.6197,123.1816],"Bagumbayan Norte":[13.6239,123.1934],"Bagumbayan Sur":[13.6215,123.1916],
+    "Balatas":[13.6481,123.1936],"Calauag":[13.6182,123.1892],"Cararayan":[13.6763,123.1814],
+    "Carolina":[13.6624,123.2561],"Concepcion Grande":[13.6293,123.1985],"Concepcion Pequeña":[13.6229,123.2033],
+    "Dayangdang":[13.6115,123.1966],"Del Rosario":[13.6231,123.1869],"Dinaga":[13.6201,123.1827],
+    "Igualdad Interior":[13.6193,123.1855],"Lerma":[13.6176,123.1834],"Liboton":[13.6109,123.1839],
+    "Mabolo":[13.6286,123.1874],"Pacol":[13.6753,123.2052],"Panicuason":[13.7102,123.2611],
+    "Peñafrancia":[13.6210,123.1910],"Sabang":[13.6187,123.1812],"San Felipe":[13.6159,123.1846],
+    "San Francisco":[13.6219,123.1898],"San Isidro":[13.6315,123.2049],"Santa Cruz":[13.6178,123.1789],
+    "Tabuco":[13.6298,123.1856],"Tinago":[13.6227,123.1822],"Triangulo":[13.6170,123.1870]
+  };
+
+  const barangayCount = {};
+  const heatPoints = [];
+
+  reports.forEach(r => {
+    const b = normalizeBarangay(r.barangay);
+    if (barangayCoords[b]) {
+      barangayCount[b] = (barangayCount[b] || 0) + 1;
+    }
+  });
+
+  Object.entries(barangayCount).forEach(([b, count]) => {
+    const [lat, lng] = barangayCoords[b];
+    heatPoints.push([lat, lng, count]);
+  });
+
+  L.heatLayer(heatPoints, {
+    radius: 20,
+    blur: 10,
+    maxZoom: 17,
+    gradient: {
+      0.0: '#a5d6a7',
+      0.5: '#ffb74d',
+      1.0: '#e53935'
+    }
+  }).addTo(map);
+
+  document.querySelector(".map-legend ul").innerHTML = `
+    <li><span class="legend low"></span> Low</li>
+    <li><span class="legend medium"></span> Medium</li>
+    <li><span class="legend high"></span> High</li>
+  `;
+}
+
+document.getElementById("generateReport").addEventListener("click", async () => {
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p", "mm", "a4");
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  let yOffset = 20;
+
+  const reports = window._reports || [];
+  if (!reports.length) {
+    alert("No report data available!");
+    return;
+  }
+
+  pdf.setFontSize(18);
+  pdf.setTextColor(39, 87, 71);
+  pdf.text("NagaBantay Analytics Report", 14, yOffset);
+  yOffset += 10;
+
+  pdf.setFontSize(10);
+  pdf.setTextColor(0, 0, 0);
+  const officeName = document.getElementById("username").textContent || "Office";
+  pdf.text(`Office: ${officeName}`, 14, yOffset);
+  yOffset += 6;
+  pdf.text(`Generated on: ${new Date().toLocaleString()}`, 14, yOffset);
+  yOffset += 10;
+
+  const trendData = {};
+  reports.forEach(r => {
+    const d = r.date_created?.toDate?.() || new Date(r.date_created);
+    if (!d || isNaN(d)) return;
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,'0')}`;
+    trendData[key] = (trendData[key] || 0) + 1;
+  });
+
+  const trendLabels = Object.keys(trendData).sort(
+    (a,b) => new Date(a + "-01") - new Date(b + "-01")
+  );
+  const trendValues = trendLabels.map(l => trendData[l]);
+
+  const trendCanvas = document.createElement("canvas");
+  trendCanvas.width = 800;
+  trendCanvas.height = 400;
+  trendCanvas.style.position = "absolute";
+  trendCanvas.style.left = "-9999px";
+  document.body.appendChild(trendCanvas);
+
+  new Chart(trendCanvas, {
+    type: "line",
+    data: {
+      labels: trendLabels,
+      datasets: [{
+        label: "Issues",
+        data: trendValues,
+        borderColor: "#2E7D32",
+        backgroundColor: "rgba(46,125,50,0.2)",
+        pointBackgroundColor: "#2E7D32",
+        tension: 0.35,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: false,
+      plugins: { legend: { labels: { color: "#000000" } } },
+      scales: {
+        x: { ticks: { color: "#000000" }, grid: { color: "#e0e0e0" } },
+        y: { ticks: { color: "#000000" }, grid: { color: "#e0e0e0" } }
+      }
+    }
+  });
+
+  await new Promise(resolve => setTimeout(resolve, 50));
+  const trendImg = trendCanvas.toDataURL("image/png");
+  pdf.addImage(trendImg, "PNG", 14, yOffset, pageWidth - 28, 70);
+  yOffset += 78;
+  document.body.removeChild(trendCanvas);
+
+  const barangayCoords = {
+    "Abella":[13.6197,123.1816], "Bagumbayan Norte":[13.6239,123.1934], "Bagumbayan Sur":[13.6215,123.1916],
+    "Balatas":[13.6481,123.1936], "Calauag":[13.6182,123.1892], "Cararayan":[13.6763,123.1814],
+    "Carolina":[13.6624,123.2561], "Concepcion Grande":[13.6293,123.1985], "Concepcion Pequeña":[13.6229,123.2033],
+    "Dayangdang":[13.6115,123.1966], "Del Rosario":[13.6231,123.1869], "Dinaga":[13.6201,123.1827],
+    "Igualdad Interior":[13.6193,123.1855], "Lerma":[13.6176,123.1834], "Liboton":[13.6109,123.1839],
+    "Mabolo":[13.6286,123.1874], "Pacol":[13.6753,123.2052], "Panicuason":[13.7102,123.2611],
+    "Peñafrancia":[13.6210,123.1910], "Sabang":[13.6187,123.1812], "San Felipe":[13.6159,123.1846],
+    "San Francisco":[13.6219,123.1898], "San Isidro":[13.6315,123.2049], "Santa Cruz":[13.6178,123.1789],
+    "Tabuco":[13.6298,123.1856], "Tinago":[13.6227,123.1822], "Triangulo":[13.6170,123.1870]
+  };
+
+  const heatCounts = {};
+  reports.forEach(r => {
+    const b = r.barangay;   
+    if (barangayCoords[b]) heatCounts[b] = (heatCounts[b] || 0) + 1;
+  });
+
+  if (yOffset > 220) { pdf.addPage(); yOffset = 20; }
+  pdf.setFontSize(12);
+  pdf.setTextColor(0,0,0);
+  pdf.text("Heatmap: Report Density by Barangay", 14, yOffset);
+  yOffset += 6;
+
+  const heatXStart = 20;
+  const heatYStart = yOffset;
+  const heatWidth = pageWidth - 40;
+
+  Object.entries(barangayCoords).forEach(([b,[lat,lng]],i)=>{
+    const count = heatCounts[b] || 0;
+    let color = "#a5d6a7"; // low
+    if(count > 0 && count <= 3) color = "#ffb74d"; // medium
+    if(count > 3) color = "#e53935"; // high
+
+    const x = heatXStart + (i % 6) * (heatWidth / 6);
+    const y = heatYStart + Math.floor(i / 6) * 10;
+    pdf.setFillColor(color);
+    pdf.circle(x, y, 3, 'F');
+    pdf.setFontSize(7);
+    pdf.setTextColor(0,0,0);
+    pdf.text(b, x + 4, y + 2);
+  });
+
+  yOffset += Math.ceil(Object.keys(barangayCoords).length / 6) * 10 + 10;
+
+  if (yOffset > 240) { pdf.addPage(); yOffset = 20; }
+
+  const categoryCounts = {};
+  reports.forEach(r => {
+    const cat = r.category || "Other";
+    categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+  });
+
+  pdf.setFontSize(12);
+  pdf.setTextColor(0,0,0);
+  pdf.text("Report Counts per Category", 14, yOffset);
+  yOffset += 6;
+
+  const tableData = Object.entries(categoryCounts).map(([k,v]) => [k,v]);
+  pdf.autoTable({
+    startY: yOffset,
+    head: [["Category", "Count"]],
+    body: tableData,
+    theme: "grid",
+    headStyles: { fillColor: [39,87,71], textColor: 255 },
+    bodyStyles: { textColor: 0 },
+    styles: { fontSize: 10 }
+  });
+
+  pdf.save(`NagaBantay_Report_${officeName.replace(/\s+/g,'')}.pdf`);
+});
+
+</script>
+
+</body>
+</html>

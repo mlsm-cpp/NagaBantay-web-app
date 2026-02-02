@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<title>NagaBantay | Profile</title>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<style>
+* {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #e6efe5;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.logo {
+    height: 25px;
+    width: auto;
+    margin-right: 0;
+}
+
+.header {
+    background: linear-gradient(to right, #3d9776, #66d2ab, #ccffed, #d9fff2, #d9fff2, #ffffff);
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.greeting {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: white;
+    -webkit-text-stroke: 0.5px #06402b;
+    margin-left: 0rem;
+}
+
+.greeting #username {
+    color: #06402b; 
+    -webkit-text-stroke: 0; 
+    margin-left: 0rem;
+}
+
+.logout-btn {
+    background-color: #ffffff;
+    color: #06402b;
+    border: 2px solid #06402b;
+    border-radius: 5px;
+    padding: 0.3rem 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.logout-btn:hover {
+    background-color: #06402b;
+    color: white;
+}
+
+.navbar {
+    background: #06402b;
+    padding: 0.5rem 0; 
+    font-weight: 600;
+    position: sticky;
+    top: 60px;
+    z-index: 999;
+}
+
+.navbar ul {
+    display: flex;
+    justify-content: center; 
+    gap: 1.5in;
+    list-style: none;
+}
+
+.navbar li {
+    position: relative;
+    cursor: pointer;
+    color: white;
+    text-transform: uppercase;
+    transition: 0.2s;
+    padding-bottom: 0.3rem; 
+}
+
+.navbar li:hover {
+    opacity: 0.8;
+}
+
+.navbar li a {
+    color: white;
+    text-decoration: none;
+    display: block; 
+    padding: 0.5rem 0; 
+    text-transform: uppercase;
+}
+
+.navbar li.active::after {
+    content: '';
+    position: absolute;
+    bottom: 3px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #ffffff;
+    border-radius: 2px;
+}
+
+.profile-container { display: flex; justify-content: center; padding: 2rem 1rem; }
+
+.profile-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+    background: #06402b;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    padding: 2rem;
+    max-width: 750px;
+    width: 100%;
+}
+
+.profile-card h2 {
+    grid-column: span 2;
+    color: white;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.profile-card .info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #f0fdf7;
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.profile-card .role {
+    grid-column: span 2;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    background-color: #e0fff4;
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    color: #06402b;
+}
+
+.stat-box {
+    grid-column: span 1;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.stat-box h3 {
+    font-size: 0.9rem;
+    color: #06402b;
+}
+
+.stat-box span {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #3d9776;
+}
+
+.rating-stars {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.rating-stars i {
+  color: #f5b301;
+  font-size: 1.4rem;
+}
+
+</style>
+</head>
+<body>
+
+<header class="header">
+    <div class="brand">
+        <img src="images/logo.png" class="logo">
+        <div class="greeting">Naga<span id="username">Bantay</span></div>
+    </div>
+    <a href="login.html" class="logout-btn" id="logoutBtn">Log Out</a>
+</header>
+
+<nav class="navbar">
+    <ul>
+        <li><a href="home.html">Home</a></li>
+        <li><a href="reports.html">Reports</a></li>
+        <li><a href="alerts.html">Alerts</a></li>
+        <li class="active"><a href="profile.html">Profile</a></li>
+    </ul>
+</nav>
+
+<div class="profile-container">
+    <div class="profile-card">
+        <h2 id="office">Office Name</h2>
+
+        <div class="info"><i class="fa-solid fa-envelope"></i><span id="email"></span></div>
+        <div class="info"><i class="fa-solid fa-building"></i><span id="office_name"></span></div>
+        <div class="info"><i class="fa-solid fa-briefcase"></i><span id="office_type"></span></div>
+        <div class="info"><i class="fa-solid fa-list"></i><span id="category_handled"></span></div>
+
+        <div class="stat-box">
+            <h3>Reports Received</h3>
+            <span id="receivedCount">0</span>
+        </div>
+
+        <div class="stat-box">
+            <h3>Reports Resolved</h3>
+            <span id="resolvedCount">0</span>
+        </div>
+        <div class="stat-box">
+  <h3>Pending Reports</h3>
+  <span id="pendingCount">0</span>
+</div>
+
+<div class="stat-box">
+  <h3>Office Rating</h3>
+  <div class="rating-stars">
+    <i class="fa-solid fa-star"></i>
+    <i class="fa-solid fa-star"></i>
+    <i class="fa-solid fa-star"></i>
+  </div>
+</div>
+
+
+<div class="stat-box" style="grid-column: span 2;">
+  <h3>Resolution Rate</h3>
+  <span id="resolutionRate">0%</span>
+  <div style="background:#e6efe5;border-radius:10px;overflow:hidden;height:10px;margin-top:8px;">
+    <div id="progressBar" style="height:100%;width:0%;background:#3d9776;transition:0.4s;"></div>
+  </div>
+</div>
+
+        <div class="role"><i class="fa-solid fa-user-shield"></i><span id="role"></span></div>
+    </div>
+</div>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAVoghFOOiZwimjT48hG_Sp-GMLlhDgUAI",
+  authDomain: "nagabantay.firebaseapp.com",
+  projectId: "nagabantay",
+  storageBucket: "nagabantay.appspot.com",
+  messagingSenderId: "92668872053",
+  appId: "1:92668872053:web:a48bc62366aadb60dd7f3c"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+auth.onAuthStateChanged(async (user) => {
+  if (!user) return location.href = "login.html";
+
+  const email = user.email;
+  const orgSnap = await db.collection("organizations").where("email", "==", email).get();
+  if (orgSnap.empty) return;
+
+  const org = orgSnap.docs[0].data();
+  const office = org.office;
+
+  document.getElementById("email").innerText = org.email;
+  document.getElementById("office").innerText = org.office;
+  document.getElementById("office_name").innerText = org.office_name;
+  document.getElementById("office_type").innerText = org.office_type || '';
+  document.getElementById("category_handled").innerText = org.category_handled || '';
+  document.getElementById("role").innerText = org.role;
+
+  db.collection("reports").where("office", "==", office)
+    .onSnapshot((snapshot) => {
+
+      let total = snapshot.size;
+      let resolved = 0;
+      let pending = 0;
+
+      snapshot.forEach(doc => {
+        const status = doc.data().my_naga_status;
+
+        if (status === "Done") resolved++;
+        if (["Not Yet Responded", "Pending", "Awaiting for Review"].includes(status)) {
+          pending++;
+        }
+      });
+
+      document.getElementById("receivedCount").innerText = total;
+      document.getElementById("resolvedCount").innerText = resolved;
+      document.getElementById("pendingCount").innerText = pending;
+
+      const rate = total ? Math.round((resolved / total) * 100) : 0;
+      document.getElementById("resolutionRate").innerText = rate + "%";
+      document.getElementById("progressBar").style.width = rate + "%";
+    });
+});
+
+
+document.getElementById("logoutBtn").addEventListener("click", () => auth.signOut());
+</script>
+
+</body>
+</html>
